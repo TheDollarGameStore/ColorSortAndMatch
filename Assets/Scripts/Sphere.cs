@@ -6,6 +6,8 @@ public class Sphere : MonoBehaviour
 {
     public Constants.SphereColor color;
 
+    public GameObject popEffect;
+
     [HideInInspector]
     public bool inClaw;
 
@@ -27,7 +29,9 @@ public class Sphere : MonoBehaviour
 
     private void Pop()
     {
+        Instantiate(popEffect, transform.position, Quaternion.identity);
         GameManager.instance.canMove = true;
+        Camera.main.GetComponent<CameraBehaviour>().Shake();
         Destroy(gameObject);
     }
 }

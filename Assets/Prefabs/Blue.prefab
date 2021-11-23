@@ -95,3 +95,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   color: 3
+  popEffect: {fileID: 198276, guid: 1720f2c1867206149a7c64de30295781, type: 3}
+  inClaw: 0
+  goalPos: {x: 0, y: 0, z: 0}
