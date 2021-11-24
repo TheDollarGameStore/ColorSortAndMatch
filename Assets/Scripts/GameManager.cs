@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -32,6 +33,12 @@ public class GameManager : MonoBehaviour
     private WobbleUI wobbler;
 
     private List<Constants.SphereColor> nextFill;
+
+    [SerializeField]
+    private List<Image> nextFillIndicators;
+
+    [SerializeField]
+    private List<Sprite> nextFillIndicatorsSprites;
 
     // Start is called before the first frame update
     void Awake()
@@ -69,6 +76,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             nextFill.Add((Constants.SphereColor)Random.Range(0, 4));
+            nextFillIndicators[i].sprite = nextFillIndicatorsSprites[(int)nextFill[i]];
         }
     }
 
