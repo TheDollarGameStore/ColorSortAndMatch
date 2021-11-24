@@ -40,6 +40,17 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private List<Sprite> nextFillIndicatorsSprites;
 
+    [SerializeField]
+    private TextMeshProUGUI turnsLeftText;
+
+    private int turnsLeft;
+
+    [SerializeField]
+    private RectTransform skipTurnButtonTransform;
+
+    [SerializeField]
+    private GameObject addScorePrefab;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -51,6 +62,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        turnsLeft = 5;
+        turnsLeftText.text = turnsLeft.ToString();
         wobbler = comboText.GetComponent<WobbleUI>();
         combo = 0;
         score = 0;
@@ -67,6 +80,29 @@ public class GameManager : MonoBehaviour
         }
 
         PrepNextFill();
+    }
+
+    public void CountDown()
+    {
+        turnsLeft -= 1;
+        if (turnsLeft == -1)
+        {
+            FillUp();
+            turnsLeft = 5;
+        }
+        turnsLeftText.text = turnsLeft.ToString();
+    }
+
+    public void Skip()
+    {
+        FillUp();
+        score += 100 * (turnsLeft + 1);
+        GameObject newScore = Instantiate(addScorePrefab, Vector3.zero, Quaternion.identity);
+        newScore.transform.SetParent(Camera.main.transform.Find("Canvas").transform, false);
+        newScore.GetComponent<RectTransform>().localPosition = skipTurnButtonTransform.localPosition + (Vector3)(Vector2.up * 300f) + (Vector3)(Vector2.left * 125f);
+        newScore.GetComponent<TextMeshProUGUI>().text = "+" + (100 * (turnsLeft + 1)).ToString();
+        turnsLeft = 5;
+        turnsLeftText.text = turnsLeft.ToString();
     }
 
     private void PrepNextFill()

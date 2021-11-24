@@ -22,7 +22,7 @@ public class Sphere : MonoBehaviour
         }
         else
         {
-            transform.position = Vector3.Lerp(transform.position, GameManager.instance.claw.targetTube.transform.position + (Vector3.up * 8.4f), 20f * Time.deltaTime);
+            transform.position = Vector3.Lerp(transform.position, GameManager.instance.claw.lerpTarget.transform.position + (Vector3.up * 8.4f), 20f * Time.deltaTime);
         }
         
     }

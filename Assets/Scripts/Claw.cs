@@ -9,6 +9,9 @@ public class Claw : MonoBehaviour
 
     [HideInInspector]
     public Tube targetTube;
+
+    [HideInInspector]
+    public Tube lerpTarget;
     // Start is called before the first frame update
 
     public void PickupBall()
@@ -28,20 +31,21 @@ public class Claw : MonoBehaviour
     {
         if (holding != null)
         {
-            if (targetTube.spheres.Count < 5)
+            if (lerpTarget.spheres.Count < 5)
             {
-                targetTube.AddBall(holding);
+                lerpTarget.AddBall(holding);
                 holding.inClaw = false;
                 holding = null;
+                GameManager.instance.CountDown();
             }
         }
     }
 
     private void Update()
     {
-        if (targetTube != null)
+        if (lerpTarget != null)
         {
-            transform.position = Vector3.Lerp(transform.position, new Vector3(targetTube.gameObject.transform.position.x, transform.position.y, transform.position.z), 20f * Time.deltaTime);
+            transform.position = Vector3.Lerp(transform.position, new Vector3(lerpTarget.gameObject.transform.position.x, transform.position.y, transform.position.z), 20f * Time.deltaTime);
         }
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -51,6 +55,11 @@ public class Claw : MonoBehaviour
             if (hit.collider.CompareTag("Tube"))
             {
                 targetTube = hit.collider.gameObject.GetComponent<Tube>();
+                lerpTarget = targetTube;
+            }
+            else
+            {
+                targetTube = null;
             }
         }
 
@@ -59,20 +68,15 @@ public class Claw : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
-                if (holding == null)
+                if (holding == null && targetTube != null)
                 {
                     PickupBall();
                 }
             }
 
-            if (Input.GetMouseButtonUp(0))
+            if (Input.GetMouseButtonUp(0) && holding != null)
             {
                 DropBall();
-            }
-
-            if (Input.GetMouseButtonDown(1))
-            {
-                GameManager.instance.FillUp();
             }
         }
     }
