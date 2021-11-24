@@ -31,6 +31,8 @@ public class GameManager : MonoBehaviour
 
     private WobbleUI wobbler;
 
+    private List<Constants.SphereColor> nextFill;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -62,7 +64,12 @@ public class GameManager : MonoBehaviour
 
     private void PrepNextFill()
     {
+        nextFill = new List<Constants.SphereColor>();
 
+        for (int i = 0; i < 3; i++)
+        {
+            nextFill.Add((Constants.SphereColor)Random.Range(0, 4));
+        }
     }
 
     public void FillUp()
@@ -81,7 +88,7 @@ public class GameManager : MonoBehaviour
         {
             for (int i = 0; i < nonFullTubes.Count; i++)
             {
-                nonFullTubes[i].AddRandomBalls(1);
+                nonFullTubes[i].AddColorBall(nextFill[i]);
             }
 
             GameOver();
@@ -95,7 +102,7 @@ public class GameManager : MonoBehaviour
 
             for (int i = 0; i < nonFullTubes.Count; i++)
             {
-                nonFullTubes[i].AddRandomBalls(1);
+                nonFullTubes[i].AddColorBall(nextFill[i]);
             }
 
             PrepNextFill();

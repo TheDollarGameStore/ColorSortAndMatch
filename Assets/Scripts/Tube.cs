@@ -30,6 +30,15 @@ public class Tube : MonoBehaviour
         CheckMatches(true);
     }
 
+    public void AddColorBall(Constants.SphereColor color)
+    {
+        Sphere newSphere = Instantiate(spherePrefabs[(int)color], transform.position + (Vector3.up * 8f), Quaternion.identity).GetComponent<Sphere>();
+        spheres.Add(newSphere);
+        UpdateSphereLocations();
+
+        CheckMatches(true);
+    }
+
     public void AddBall(Sphere ball)
     {
         spheres.Add(ball);

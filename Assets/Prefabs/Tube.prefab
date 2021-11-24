@@ -45,11 +45,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 314025e599513fb46b1e393a437c6106, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spheres: []
   spherePrefabs:
-  - {fileID: 7971191090136226213, guid: a1d4eac8281aa4b4db202432abb5dd0f, type: 3}
-  - {fileID: 834086367097604186, guid: f0210e0855f2a3e4a92810bd47e7ed92, type: 3}
   - {fileID: 2899194229410858906, guid: d6e62bfb35aa50c4da7065623553a6bc, type: 3}
+  - {fileID: 834086367097604186, guid: f0210e0855f2a3e4a92810bd47e7ed92, type: 3}
   - {fileID: 7327685961499188333, guid: b52e69d818609ba40bd527cdfa23c739, type: 3}
+  - {fileID: 7971191090136226213, guid: a1d4eac8281aa4b4db202432abb5dd0f, type: 3}
 --- !u!65 &4592352468823810905
 BoxCollider:
   m_ObjectHideFlags: 0
