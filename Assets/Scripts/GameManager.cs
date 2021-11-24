@@ -82,42 +82,22 @@ public class GameManager : MonoBehaviour
 
     public void FillUp()
     {
-        List<Tube> nonFullTubes = new List<Tube>();
+        List<Tube> pickedTubes = tubes;
 
-        for (int j = 0; j < tubes.Count; j++)
+        while (pickedTubes.Count > 3)
         {
-            if (tubes[j].spheres.Count < 5)
-            {
-                nonFullTubes.Add(tubes[j]);
-            }
+            pickedTubes.RemoveAt(Random.Range(0, pickedTubes.Count));
         }
 
-        if (nonFullTubes.Count <= 3)
+        for (int i = 0; i < 3; i++)
         {
-            for (int i = 0; i < nonFullTubes.Count; i++)
-            {
-                nonFullTubes[i].AddColorBall(nextFill[i]);
-            }
-
-            GameOver();
+            pickedTubes[i].AddColorBall(nextFill[i]);
         }
-        else
-        {
-            while (nonFullTubes.Count > 3)
-            {
-                nonFullTubes.RemoveAt(Random.Range(0, nonFullTubes.Count));
-            }
 
-            for (int i = 0; i < nonFullTubes.Count; i++)
-            {
-                nonFullTubes[i].AddColorBall(nextFill[i]);
-            }
-
-            PrepNextFill();
-        }
+        PrepNextFill();
     }
 
-    private void GameOver()
+    public void GameOver()
     {
         Debug.Log("Game Over");
     }
