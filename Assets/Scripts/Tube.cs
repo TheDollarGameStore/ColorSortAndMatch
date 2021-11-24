@@ -25,8 +25,9 @@ public class Tube : MonoBehaviour
             Sphere newSphere = Instantiate(spherePrefabs[Random.Range(0, spherePrefabs.Count)], transform.position + (Vector3.up * 8f), Quaternion.identity).GetComponent<Sphere>();
             spheres.Add(newSphere);
             UpdateSphereLocations();
-            CheckMatches();
         }
+
+        CheckMatches(true);
     }
 
     public void AddBall(Sphere ball)
@@ -35,7 +36,7 @@ public class Tube : MonoBehaviour
 
         UpdateSphereLocations();
 
-        CheckMatches();
+        CheckMatches(false);
     }
 
     public Sphere TakeBall()
@@ -45,7 +46,7 @@ public class Tube : MonoBehaviour
         return takeSphere;
     }
 
-    private void CheckMatches()
+    private void CheckMatches(bool dontBreakCombo)
     {
         Constants.SphereColor color = spheres[spheres.Count - 1].color;
 
@@ -63,16 +64,29 @@ public class Tube : MonoBehaviour
             }
         }
 
-        if (totalMatches == 3)
+        if (totalMatches >= 3)
         {
             //Pop
             GameManager.instance.canMove = false;
+            GameManager.instance.combo++;
+            GameManager.instance.Invoke("UpdateComboCounter", 0.35f);
             int removeAtIndex = spheres.Count - totalMatches;
             for (int i = 0; i < totalMatches; i++)
             {
                 spheres[removeAtIndex].Invoke("Pop", 0.35f);
                 spheres.RemoveAt(removeAtIndex);
             }
+            Invoke("UpdateSphereLocations", 0.35f);
+        }
+        else
+        {
+            if (!dontBreakCombo)
+            {
+                GameManager.instance.combo = 0;
+                GameManager.instance.UpdateComboCounter();
+            }
         }
     }
+
+    
 }

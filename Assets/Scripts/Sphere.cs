@@ -32,6 +32,7 @@ public class Sphere : MonoBehaviour
         Instantiate(popEffect, transform.position, Quaternion.identity);
         GameManager.instance.canMove = true;
         Camera.main.GetComponent<CameraBehaviour>().Shake();
+        GameManager.instance.AddScore();
         Destroy(gameObject);
     }
 }

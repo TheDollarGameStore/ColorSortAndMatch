@@ -72,7 +72,7 @@ public class Claw : MonoBehaviour
 
             if (Input.GetMouseButtonDown(1))
             {
-                GameManager.instance.FillUp(3);
+                GameManager.instance.FillUp();
             }
         }
     }

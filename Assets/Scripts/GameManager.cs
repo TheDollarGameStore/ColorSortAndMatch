@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,6 +19,18 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     public bool canMove;
 
+    [SerializeField]
+    private TextMeshProUGUI scoreText;
+
+    private int score;
+    private int displayScore;
+    public int combo;
+
+    [SerializeField]
+    private TextMeshProUGUI comboText;
+
+    private WobbleUI wobbler;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -29,6 +42,9 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        wobbler = comboText.GetComponent<WobbleUI>();
+        combo = 0;
+        score = 0;
         canMove = true;
         tubes = new List<Tube>();
         float spaceBetween = 2f;
@@ -40,32 +56,88 @@ public class GameManager : MonoBehaviour
             newTube.AddRandomBalls(startingSpheres);
             tubes.Add(newTube);
         }
+
+        PrepNextFill();
     }
 
-    public void FillUp(int amount)
+    private void PrepNextFill()
     {
-        for (int i = 0; i < amount; i++)
-        {
-            List<Tube> nonFullTubes = new List<Tube>();
 
-            for (int j = 0; j < tubes.Count; j++)
+    }
+
+    public void FillUp()
+    {
+        List<Tube> nonFullTubes = new List<Tube>();
+
+        for (int j = 0; j < tubes.Count; j++)
+        {
+            if (tubes[j].spheres.Count < 5)
             {
-                if (tubes[j].spheres.Count < 5)
-                {
-                    nonFullTubes.Add(tubes[j]);
-                }
+                nonFullTubes.Add(tubes[j]);
+            }
+        }
+
+        if (nonFullTubes.Count <= 3)
+        {
+            for (int i = 0; i < nonFullTubes.Count; i++)
+            {
+                nonFullTubes[i].AddRandomBalls(1);
             }
 
-            if (nonFullTubes.Count != 0)
+            GameOver();
+        }
+        else
+        {
+            while (nonFullTubes.Count > 3)
             {
-                nonFullTubes[Random.Range(0, nonFullTubes.Count - 1)].AddRandomBalls(1);
+                nonFullTubes.RemoveAt(Random.Range(0, nonFullTubes.Count));
+            }
+
+            for (int i = 0; i < nonFullTubes.Count; i++)
+            {
+                nonFullTubes[i].AddRandomBalls(1);
+            }
+
+            PrepNextFill();
+        }
+    }
+
+    private void GameOver()
+    {
+        Debug.Log("Game Over");
+    }
+
+    private void FixedUpdate()
+    {
+        if (displayScore != score)
+        {
+            if (score - displayScore > 200)
+            {
+                displayScore += 100;
             }
             else
             {
-                //GameOver
-                Debug.Log("Game Over");
+                displayScore += 20;
             }
-            
+        }
+        scoreText.text = displayScore.ToString();
+    }
+
+    public void AddScore()
+    {
+        score += 100 * combo;
+    }
+
+    public void UpdateComboCounter()
+    {
+        if (combo > 1)
+        {
+            comboText.text = "X" + combo.ToString();
+            wobbler.DoTheWobble();
+        }
+        else
+        {
+            comboText.text = "";
         }
     }
 }
