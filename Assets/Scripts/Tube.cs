@@ -9,6 +9,9 @@ public class Tube : MonoBehaviour
 
     public List<GameObject> spherePrefabs;
 
+    [SerializeField]
+    private GameObject warning;
+
     // Update is called once per frame
     void UpdateSphereLocations()
     {
@@ -22,21 +25,24 @@ public class Tube : MonoBehaviour
     {
         for (int i = 0; i < amount; i++)
         {
-            Sphere newSphere = Instantiate(spherePrefabs[Random.Range(0, spherePrefabs.Count)], transform.position + (Vector3.up * 8f), Quaternion.identity).GetComponent<Sphere>();
+            Sphere newSphere = Instantiate(spherePrefabs[Random.Range(0, spherePrefabs.Count)], GameManager.instance.ballSpawnTransform.position, Quaternion.identity).GetComponent<Sphere>();
             spheres.Add(newSphere);
             UpdateSphereLocations();
         }
 
         CheckMatches(true);
+        CheckIfFull();
     }
 
-    public void AddColorBall(Constants.SphereColor color)
+    public IEnumerator AddColorBall(Constants.SphereColor color, float delay)
     {
-        Sphere newSphere = Instantiate(spherePrefabs[(int)color], transform.position + (Vector3.up * 8f), Quaternion.identity).GetComponent<Sphere>();
+        yield return new WaitForSeconds(delay);
+        Sphere newSphere = Instantiate(spherePrefabs[(int)color], GameManager.instance.ballSpawnTransform.position, Quaternion.identity).GetComponent<Sphere>();
         spheres.Add(newSphere);
         UpdateSphereLocations();
 
         CheckMatches(true);
+        CheckIfFull();
     }
 
     public void AddBall(Sphere ball)
@@ -46,12 +52,14 @@ public class Tube : MonoBehaviour
         UpdateSphereLocations();
 
         CheckMatches(false);
+        CheckIfFull();
     }
 
     public Sphere TakeBall()
     {
         Sphere takeSphere = spheres[spheres.Count - 1];
         spheres.RemoveAt(spheres.Count - 1);
+        CheckIfFull();
         return takeSphere;
     }
 
@@ -94,6 +102,19 @@ public class Tube : MonoBehaviour
                 GameManager.instance.combo = 0;
                 GameManager.instance.UpdateComboCounter();
             }
+        }
+    }
+
+    private void CheckIfFull()
+    {
+        if (spheres.Count == 6)
+        {
+            warning.SetActive(true);
+            warning.GetComponent<Wobble>().DoTheWobble();
+        }
+        else
+        {
+            warning.SetActive(false);
         }
     }
 

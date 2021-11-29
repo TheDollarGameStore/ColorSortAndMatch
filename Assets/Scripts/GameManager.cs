@@ -23,7 +23,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI scoreText;
 
-    private int score;
+    [HideInInspector]
+    public int score;
     private int displayScore;
     public int combo;
 
@@ -51,6 +52,23 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject addScorePrefab;
 
+    public Transform ballSpawnTransform;
+
+    [SerializeField]
+    private GameObject menuBg;
+
+    [SerializeField]
+    private GameObject gameOverText;
+
+    [SerializeField]
+    private GameObject victoryText;
+
+    [HideInInspector]
+    public int level;
+
+    [HideInInspector]
+    public int requiredScore;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -58,6 +76,10 @@ public class GameManager : MonoBehaviour
             instance = this;
         else if (instance != this)
             Destroy(gameObject);
+
+
+        level = PlayerPrefs.GetInt("Level", 1);
+        requiredScore = 2000 + (level * 200);
     }
 
     private void Start()
@@ -96,7 +118,7 @@ public class GameManager : MonoBehaviour
     public void Skip()
     {
         FillUp();
-        score += 100 * (turnsLeft + 1);
+        AddScore(100 * (turnsLeft + 1));
         GameObject newScore = Instantiate(addScorePrefab, Vector3.zero, Quaternion.identity);
         newScore.transform.SetParent(Camera.main.transform.Find("Canvas").transform, false);
         newScore.GetComponent<RectTransform>().localPosition = skipTurnButtonTransform.localPosition + (Vector3)(Vector2.up * 300f) + (Vector3)(Vector2.left * 125f);
@@ -118,7 +140,11 @@ public class GameManager : MonoBehaviour
 
     public void FillUp()
     {
-        List<Tube> pickedTubes = tubes;
+        canMove = false;
+        Invoke("ResetCanMove", 0.31f);
+        CheckGameOver();
+
+        List<Tube> pickedTubes = new List<Tube>(tubes);
 
         while (pickedTubes.Count > 3)
         {
@@ -127,15 +153,35 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < 3; i++)
         {
-            pickedTubes[i].AddColorBall(nextFill[i]);
+            StartCoroutine(pickedTubes[i].AddColorBall(nextFill[i], i * 0.1f));
         }
 
         PrepNextFill();
     }
 
+
+    private void ResetCanMove()
+    {
+        canMove = true;
+    }
+
+    private void CheckGameOver()
+    {
+        for (int i = 0; i < tubes.Count; i++)
+        {
+            if (tubes[i].spheres.Count > 5)
+            {
+                GameOver();
+                break;
+            }
+        }
+    }
+
     public void GameOver()
     {
-        Debug.Log("Game Over");
+        menuBg.SetActive(true);
+        gameOverText.SetActive(true);
+        canMove = false;
     }
 
     private void FixedUpdate()
@@ -157,6 +203,15 @@ public class GameManager : MonoBehaviour
     public void AddScore()
     {
         score += 100 * combo;
+        ProgressBar.instance.UpdateProgressBar();
+        CheckVictory();
+    }
+
+    public void AddScore(int amount)
+    {
+        score += amount;
+        ProgressBar.instance.UpdateProgressBar();
+        CheckVictory();
     }
 
     public void UpdateComboCounter()
@@ -169,6 +224,16 @@ public class GameManager : MonoBehaviour
         else
         {
             comboText.text = "";
+        }
+    }
+
+    private void CheckVictory()
+    {
+        if (score >= requiredScore)
+        {
+            canMove = false;
+            menuBg.SetActive(true);
+            victoryText.SetActive(true);
         }
     }
 }
