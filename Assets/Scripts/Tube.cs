@@ -23,6 +23,7 @@ public class Tube : MonoBehaviour
 
     public void AddRandomBalls(int amount)
     {
+        GameManager.instance.pipe.xGoal = transform.position.x;
         for (int i = 0; i < amount; i++)
         {
             Sphere newSphere = Instantiate(spherePrefabs[Random.Range(0, spherePrefabs.Count)], GameManager.instance.ballSpawnTransform.position, Quaternion.identity).GetComponent<Sphere>();
@@ -37,6 +38,8 @@ public class Tube : MonoBehaviour
     public IEnumerator AddColorBall(Constants.SphereColor color, float delay)
     {
         yield return new WaitForSeconds(delay);
+
+        GameManager.instance.pipe.xGoal = transform.position.x;
         Sphere newSphere = Instantiate(spherePrefabs[(int)color], GameManager.instance.ballSpawnTransform.position, Quaternion.identity).GetComponent<Sphere>();
         spheres.Add(newSphere);
         UpdateSphereLocations();

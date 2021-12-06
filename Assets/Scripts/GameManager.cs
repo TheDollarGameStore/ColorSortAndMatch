@@ -47,6 +47,9 @@ public class GameManager : MonoBehaviour
     private int turnsLeft;
 
     [SerializeField]
+    private int fillEveryXMoves;
+
+    [SerializeField]
     private RectTransform skipTurnButtonTransform;
 
     [SerializeField]
@@ -63,11 +66,26 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject victoryText;
 
+    [SerializeField]
+    private GameObject continueButton;
+
+    [SerializeField]
+    private GameObject retryButton;
+
     [HideInInspector]
     public int level;
 
     [HideInInspector]
     public int requiredScore;
+
+    [SerializeField]
+    private TextMeshProUGUI goalScore;
+
+    [SerializeField]
+    private GameObject menuBox;
+
+
+    public Pipe pipe;
 
     // Start is called before the first frame update
     void Awake()
@@ -79,12 +97,13 @@ public class GameManager : MonoBehaviour
 
 
         level = PlayerPrefs.GetInt("Level", 1);
-        requiredScore = 2000 + (level * 200);
+        requiredScore = 5000 + (level * 500);
+        goalScore.text = requiredScore.ToString();
     }
 
     private void Start()
     {
-        turnsLeft = 5;
+        turnsLeft = fillEveryXMoves;
         turnsLeftText.text = turnsLeft.ToString();
         wobbler = comboText.GetComponent<WobbleUI>();
         combo = 0;
@@ -110,7 +129,7 @@ public class GameManager : MonoBehaviour
         if (turnsLeft == -1)
         {
             FillUp();
-            turnsLeft = 5;
+            turnsLeft = fillEveryXMoves;
         }
         turnsLeftText.text = turnsLeft.ToString();
     }
@@ -123,7 +142,7 @@ public class GameManager : MonoBehaviour
         newScore.transform.SetParent(Camera.main.transform.Find("Canvas").transform, false);
         newScore.GetComponent<RectTransform>().localPosition = skipTurnButtonTransform.localPosition + (Vector3)(Vector2.up * 300f) + (Vector3)(Vector2.left * 125f);
         newScore.GetComponent<TextMeshProUGUI>().text = "+" + (100 * (turnsLeft + 1)).ToString();
-        turnsLeft = 5;
+        turnsLeft = fillEveryXMoves;
         turnsLeftText.text = turnsLeft.ToString();
     }
 
@@ -181,6 +200,8 @@ public class GameManager : MonoBehaviour
     {
         menuBg.SetActive(true);
         gameOverText.SetActive(true);
+        menuBox.SetActive(true);
+        retryButton.SetActive(true);
         canMove = false;
     }
 
@@ -234,6 +255,9 @@ public class GameManager : MonoBehaviour
             canMove = false;
             menuBg.SetActive(true);
             victoryText.SetActive(true);
+            menuBox.SetActive(true);
+            continueButton.SetActive(true);
+            PlayerPrefs.SetInt("Level", level + 1);
         }
     }
 }
