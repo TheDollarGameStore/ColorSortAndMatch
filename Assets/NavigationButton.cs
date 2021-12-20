@@ -21,6 +21,24 @@ public class NavigationButton : MonoBehaviour
         if (GameObject.FindGameObjectWithTag("Transition") == null)
         {
             wobbler.DoTheWobble();
+
+            if (destination == "Gameplay")
+            {
+                int level = PlayerPrefs.GetInt("Level", 1);
+
+                if (level % 30 <= 10)
+                {
+                    destination = "Gameplay1";
+                }
+                else if (level % 30 <= 20)
+                {
+                    destination = "Gameplay2";
+                }
+                else
+                {
+                    destination = "Gameplay3";
+                }
+            }
             Transitioner.instance.FadeIn(destination);
         }
     }

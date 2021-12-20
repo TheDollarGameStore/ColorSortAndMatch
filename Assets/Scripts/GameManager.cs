@@ -84,6 +84,12 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject menuBox;
 
+    [SerializeField]
+    private GameObject happyFace;
+
+    [SerializeField]
+    private GameObject sadFace;
+
 
     public Pipe pipe;
 
@@ -170,12 +176,21 @@ public class GameManager : MonoBehaviour
             pickedTubes.RemoveAt(Random.Range(0, pickedTubes.Count));
         }
 
+        pipe.hide = false;
+
         for (int i = 0; i < 3; i++)
         {
             StartCoroutine(pickedTubes[i].AddColorBall(nextFill[i], i * 0.1f));
         }
 
+        Invoke("HidePipe", 0.4f);
+
         PrepNextFill();
+    }
+
+    private void HidePipe()
+    {
+        pipe.hide = true;
     }
 
 
@@ -202,6 +217,7 @@ public class GameManager : MonoBehaviour
         gameOverText.SetActive(true);
         menuBox.SetActive(true);
         retryButton.SetActive(true);
+        sadFace.SetActive(true);
         canMove = false;
     }
 
@@ -257,6 +273,7 @@ public class GameManager : MonoBehaviour
             victoryText.SetActive(true);
             menuBox.SetActive(true);
             continueButton.SetActive(true);
+            happyFace.SetActive(true);
             PlayerPrefs.SetInt("Level", level + 1);
         }
     }

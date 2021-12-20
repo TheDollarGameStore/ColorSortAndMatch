@@ -22,6 +22,6 @@ public class CameraBehaviour : MonoBehaviour
 
     public void Shake()
     {
-        shakeAmount = 0.35f;
+        shakeAmount = 0f;
     }
 }
