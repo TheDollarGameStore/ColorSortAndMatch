@@ -103,7 +103,7 @@ public class GameManager : MonoBehaviour
 
 
         level = PlayerPrefs.GetInt("Level", 1);
-        requiredScore = 5000 + (level * 500);
+        requiredScore = 2000 + (level * 500);
         goalScore.text = requiredScore.ToString();
     }
 
@@ -231,7 +231,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                displayScore += 20;
+                displayScore += Mathf.Min(20, score - displayScore);
             }
         }
         scoreText.text = displayScore.ToString();
@@ -239,7 +239,7 @@ public class GameManager : MonoBehaviour
 
     public void AddScore()
     {
-        score += 100 * combo;
+        score += (int)(100f * (1 + (combo / 2f)));
         ProgressBar.instance.UpdateProgressBar();
         CheckVictory();
     }
